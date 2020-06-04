@@ -2,14 +2,21 @@ package com.blackdragon2447.cyberdogs.entities;
 
 import java.util.EnumSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Random;
 import java.util.UUID;
+import java.util.concurrent.locks.ReadWriteLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.function.Predicate;
 
 import com.blackdragon2447.cyberdogs.init.ModEntitieTypes;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 
+import net.minecraft.crash.CrashReport;
+import net.minecraft.crash.CrashReportCategory;
+import net.minecraft.crash.ReportedException;
 import net.minecraft.entity.AgeableEntity;
 import net.minecraft.entity.EntityPredicate;
 import net.minecraft.entity.EntityType;
@@ -77,6 +84,8 @@ public class CyberDog extends TameableEntity{
 	private static final DataParameter<Byte> DOG_FLAGS = EntityDataManager.createKey(CyberDog.class, DataSerializers.BYTE);
 	private static final DataParameter<Optional<UUID>> TRUSTED_UUID_SECONDARY = EntityDataManager.createKey(CyberDog.class, DataSerializers.OPTIONAL_UNIQUE_ID);
 	private static final DataParameter<Optional<UUID>> TRUSTED_UUID_MAIN = EntityDataManager.createKey(CyberDog.class, DataSerializers.OPTIONAL_UNIQUE_ID);
+	private final ReadWriteLock lock = new ReentrantReadWriteLock();
+	private final Map<Integer, EntityDataManager.DataEntry<?>> entries = Maps.newHashMap();
 	
 	public CyberDog(EntityType<CyberDog> entityType, World worldIn) {
 		super(entityType, worldIn);
@@ -147,6 +156,9 @@ public class CyberDog extends TameableEntity{
 	
 	@Override
 	public boolean processInteract(PlayerEntity player, Hand hand) {
+		System.out.println();
+		System.out.println(DOG_FLAGS.toString());
+		System.out.println();
 	      ItemStack itemstack = player.getHeldItem(hand);
 	      Item item = itemstack.getItem();
 	      if (itemstack.getItem() instanceof SpawnEggItem) {
@@ -286,6 +298,7 @@ public class CyberDog extends TameableEntity{
 	   
 	   //basegoal//
 	   abstract class BaseGoal extends Goal {
+		   
 		      private final EntityPredicate field_220816_b = (new EntityPredicate()).setDistance(12.0D).setLineOfSiteRequired().setCustomPredicate(CyberDog.this.new AlertablePredicate());
 
 		      private BaseGoal() {
@@ -363,12 +376,38 @@ public class CyberDog extends TameableEntity{
 		   }
 	   
 	   private void setDogFlag(int p_213505_1_, boolean p_213505_2_) {
-		      if (p_213505_2_) {
-		         this.dataManager.set(DOG_FLAGS, (byte)(this.dataManager.get(DOG_FLAGS) | p_213505_1_));
-		      } else {
-		         this.dataManager.set(DOG_FLAGS, (byte)(this.dataManager.get(DOG_FLAGS) & ~p_213505_1_));
+		   
+		   if(DOG_FLAGS != null){
+		   		if (p_213505_2_) {
+		   			this.dataManager.set(DOG_FLAGS, (byte)(this.dataManager.get(DOG_FLAGS) | p_213505_1_));
+		   		} else {
+		   			this.dataManager.set(DOG_FLAGS, (byte)(this.dataManager.get(DOG_FLAGS) & ~p_213505_1_));
+		   		}
+		   }
+
+	   }
+	   
+	   public <T> T get(DataParameter<T> key) {
+		      return this.getEntry(key).getValue();
+		   }
+	   
+	   
+	   private <T> EntityDataManager.DataEntry<T> getEntry(DataParameter<T> key) {
+		      this.lock.readLock().lock();
+
+		      EntityDataManager.DataEntry<T> dataentry;
+		      try {
+		         dataentry = (EntityDataManager.DataEntry<T>) this.entries.get(key.getId());
+		      } catch (Throwable throwable) {
+		         CrashReport crashreport = CrashReport.makeCrashReport(throwable, "Getting synched entity data");
+		         CrashReportCategory crashreportcategory = crashreport.makeCategory("Synched entity data");
+		         crashreportcategory.addDetail("Data ID", key);
+		         throw new ReportedException(crashreport);
+		      } finally {
+		         this.lock.readLock().unlock();
 		      }
 
+		      return dataentry;
 		   }
 	   
 	
