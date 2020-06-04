@@ -118,10 +118,10 @@ public class CyberDog extends TameableEntity{
 	    //this.goalSelector.addGoal(8, new FindItemsGoal());
 	    this.goalSelector.addGoal(9, new LookAtGoal(this, PlayerEntity.class, 8.0F));
 	    this.goalSelector.addGoal(10, new LookRandomlyGoal(this));
-	    this.targetSelector.addGoal(1, new OwnerHurtByTargetGoal(this));
-	    this.targetSelector.addGoal(2, new OwnerHurtTargetGoal(this));
-	    this.targetSelector.addGoal(3, (new HurtByTargetGoal(this)).setCallsForHelp());
-	    this.targetSelector.addGoal(5, new NearestAttackableTargetGoal<>(this, AbstractSkeletonEntity.class, false));
+	    //this.targetSelector.addGoal(1, new OwnerHurtByTargetGoal(this));
+	    //this.targetSelector.addGoal(2, new OwnerHurtTargetGoal(this));
+	    //this.targetSelector.addGoal(3, (new HurtByTargetGoal(this)).setCallsForHelp());
+	    //this.targetSelector.addGoal(5, new NearestAttackableTargetGoal<>(this, AbstractSkeletonEntity.class, false));
 		
 	}
 	
@@ -379,38 +379,15 @@ public class CyberDog extends TameableEntity{
 		   
 		   if(DOG_FLAGS != null){
 		   		if (p_213505_2_) {
-		   			this.dataManager.set(DOG_FLAGS, (byte)(this.get(DOG_FLAGS) | p_213505_1_));
+		   			this.dataManager.set(DOG_FLAGS, (byte)(this.dataManager.get(DOG_FLAGS) | p_213505_1_));
 		   		} else {
-		   			this.dataManager.set(DOG_FLAGS, (byte)(this.get(DOG_FLAGS) & ~p_213505_1_));
+		   			this.dataManager.set(DOG_FLAGS, (byte)(this.dataManager.get(DOG_FLAGS) & ~p_213505_1_));
 		   		}
 		   }
 
 	   }
 	   
-	   public <T> T get(DataParameter<T> key) {
-		      return this.getEntry(key).getValue();
-		   }
-	   
-	   
-	   @SuppressWarnings("unchecked")
-	private <T> EntityDataManager.DataEntry<T> getEntry(DataParameter<T> key) {
-		      this.lock.readLock().lock();
-
-		      EntityDataManager.DataEntry<T> dataentry;
-		      try {
-		         dataentry = (EntityDataManager.DataEntry<T>) this.entries.get(key.getId());
-		      } catch (Throwable throwable) {
-		         CrashReport crashreport = CrashReport.makeCrashReport(throwable, "Getting synched entity data");
-		         CrashReportCategory crashreportcategory = crashreport.makeCategory("Synched entity data");
-		         crashreportcategory.addDetail("Data ID", key);
-		         throw new ReportedException(crashreport);
-		      } finally {
-		         this.lock.readLock().unlock();
-		      }
-
-		      return dataentry;
-		   }
-	   
+	
 	
 
 }
