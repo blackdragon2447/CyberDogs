@@ -379,9 +379,9 @@ public class CyberDog extends TameableEntity{
 		   
 		   if(DOG_FLAGS != null){
 		   		if (p_213505_2_) {
-		   			this.dataManager.set(DOG_FLAGS, (byte)(this.dataManager.get(DOG_FLAGS) | p_213505_1_));
+		   			this.dataManager.set(DOG_FLAGS, (byte)(this.get(DOG_FLAGS) | p_213505_1_));
 		   		} else {
-		   			this.dataManager.set(DOG_FLAGS, (byte)(this.dataManager.get(DOG_FLAGS) & ~p_213505_1_));
+		   			this.dataManager.set(DOG_FLAGS, (byte)(this.get(DOG_FLAGS) & ~p_213505_1_));
 		   		}
 		   }
 
@@ -392,7 +392,8 @@ public class CyberDog extends TameableEntity{
 		   }
 	   
 	   
-	   private <T> EntityDataManager.DataEntry<T> getEntry(DataParameter<T> key) {
+	   @SuppressWarnings("unchecked")
+	private <T> EntityDataManager.DataEntry<T> getEntry(DataParameter<T> key) {
 		      this.lock.readLock().lock();
 
 		      EntityDataManager.DataEntry<T> dataentry;
