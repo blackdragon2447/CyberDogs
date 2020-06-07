@@ -4,7 +4,6 @@ import java.util.EnumSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.Random;
 import java.util.UUID;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
@@ -14,9 +13,6 @@ import com.blackdragon2447.cyberdogs.init.ModEntitieTypes;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
-import net.minecraft.crash.CrashReport;
-import net.minecraft.crash.CrashReportCategory;
-import net.minecraft.crash.ReportedException;
 import net.minecraft.entity.AgeableEntity;
 import net.minecraft.entity.EntityPredicate;
 import net.minecraft.entity.EntityType;
@@ -24,34 +20,28 @@ import net.minecraft.entity.ILivingEntityData;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.SpawnReason;
-import net.minecraft.entity.ai.goal.BegGoal;
 import net.minecraft.entity.ai.goal.BreedGoal;
 import net.minecraft.entity.ai.goal.FollowOwnerGoal;
 import net.minecraft.entity.ai.goal.Goal;
-import net.minecraft.entity.ai.goal.HurtByTargetGoal;
 import net.minecraft.entity.ai.goal.LeapAtTargetGoal;
 import net.minecraft.entity.ai.goal.LookAtGoal;
 import net.minecraft.entity.ai.goal.LookRandomlyGoal;
 import net.minecraft.entity.ai.goal.MeleeAttackGoal;
-import net.minecraft.entity.ai.goal.NearestAttackableTargetGoal;
-import net.minecraft.entity.ai.goal.OwnerHurtByTargetGoal;
-import net.minecraft.entity.ai.goal.OwnerHurtTargetGoal;
 import net.minecraft.entity.ai.goal.SitGoal;
 import net.minecraft.entity.ai.goal.SwimGoal;
 import net.minecraft.entity.ai.goal.WaterAvoidingRandomWalkingGoal;
-import net.minecraft.entity.item.ItemEntity;
-import net.minecraft.entity.monster.AbstractSkeletonEntity;
+import net.minecraft.entity.monster.CreeperEntity;
+import net.minecraft.entity.monster.GhastEntity;
 import net.minecraft.entity.monster.MonsterEntity;
+import net.minecraft.entity.passive.AnimalEntity;
 import net.minecraft.entity.passive.ChickenEntity;
 import net.minecraft.entity.passive.RabbitEntity;
 import net.minecraft.entity.passive.TameableEntity;
 import net.minecraft.entity.passive.WolfEntity;
+import net.minecraft.entity.passive.horse.AbstractHorseEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.projectile.AbstractArrowEntity;
 import net.minecraft.entity.projectile.ProjectileHelper;
-import net.minecraft.inventory.EquipmentSlotType;
-import net.minecraft.item.DyeColor;
-import net.minecraft.item.DyeItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
@@ -63,8 +53,6 @@ import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
 import net.minecraftforge.items.IItemHandler;
@@ -82,10 +70,12 @@ public class CyberDog extends TameableEntity{
 	private SitGoal sitGoal;
 	private SleepGoal sleepGoal;
 	private static final DataParameter<Byte> DOG_FLAGS = EntityDataManager.createKey(CyberDog.class, DataSerializers.BYTE);
+	//private static final DataParameter<Boolean> BEGGING = EntityDataManager.createKey(WolfEntity.class, DataSerializers.BOOLEAN);
 	private static final DataParameter<Optional<UUID>> TRUSTED_UUID_SECONDARY = EntityDataManager.createKey(CyberDog.class, DataSerializers.OPTIONAL_UNIQUE_ID);
 	private static final DataParameter<Optional<UUID>> TRUSTED_UUID_MAIN = EntityDataManager.createKey(CyberDog.class, DataSerializers.OPTIONAL_UNIQUE_ID);
 	private final ReadWriteLock lock = new ReentrantReadWriteLock();
 	private final Map<Integer, EntityDataManager.DataEntry<?>> entries = Maps.newHashMap();
+	//protected final EntityDataManager dataManager;
 	
 	public CyberDog(EntityType<CyberDog> entityType, World worldIn) {
 		super(entityType, worldIn);
@@ -148,9 +138,6 @@ public class CyberDog extends TameableEntity{
 	
 	
 
-	protected AbstractArrowEntity fireArrow(ItemStack arrowStack, float distanceFactor) {
-		return ProjectileHelper.fireArrow(this, arrowStack, distanceFactor);
-	}
 	
 	
 	
@@ -158,6 +145,10 @@ public class CyberDog extends TameableEntity{
 	public boolean processInteract(PlayerEntity player, Hand hand) {
 		System.out.println();
 		System.out.println(DOG_FLAGS.toString());
+		System.out.println();
+		System.out.println(this.isSitting());
+		System.out.println();
+		System.out.println(this.isSleeping());
 		System.out.println();
 	      ItemStack itemstack = player.getHeldItem(hand);
 	      Item item = itemstack.getItem();
@@ -183,11 +174,11 @@ public class CyberDog extends TameableEntity{
 	            	   this.sitGoal.setSitting(true);
 	                  
 	                  else if((this.isSitting()) && (!this.isSleeping())) {
-	                	  this.setSitting(false);
-	                	  CyberDog.this.setSleeping(true);
+	                	  this.sitGoal.setSitting(false);
+	                	  this.setSleeping(true);
 	                  }
 	                  else {
-	                	  CyberDog.this.setSleeping(false);
+	                	  this.setSleeping(false);
 	                	  
 	                  }
 	                  
@@ -233,6 +224,75 @@ public class CyberDog extends TameableEntity{
 	
 	public boolean isAngry() {
 	      return (this.dataManager.get(TAMED) & 2) != 0;
+	   }
+	
+	public void writeAdditional(CompoundNBT compound) {
+	      super.writeAdditional(compound);
+	      compound.putBoolean("Angry", this.isAngry());
+	   }
+
+	   /**
+	    * (abstract) Protected helper method to read subclass entity data from NBT.
+	    */
+	   public void readAdditional(CompoundNBT compound) {
+	      super.readAdditional(compound);
+	      this.setAngry(compound.getBoolean("Angry"));
+	      
+
+	   }
+	   
+	   protected void registerData() {
+		      super.registerData();
+		      //this.dataManager.register(BEGGING, false);
+		      this.dataManager.register(DOG_FLAGS, (byte)1);
+		   }
+	   
+	   
+	   
+	   public boolean canMateWith(AnimalEntity otherAnimal) {
+		      if (otherAnimal == this) {
+		         return false;
+		      } else if (!this.isTamed()) {
+		         return false;
+		      } else if (!(otherAnimal instanceof CyberDog)) {
+		         return false;
+		      } else {
+		    	  CyberDog wolfentity = (CyberDog)otherAnimal;
+		         if (!wolfentity.isTamed()) {
+		            return false;
+		         } else if (wolfentity.isSitting()) {
+		            return false;
+		         } else {
+		            return this.isInLove() && wolfentity.isInLove();
+		         }
+		      }
+		   }
+	   
+	   public boolean shouldAttackEntity(LivingEntity target, LivingEntity owner) {
+		      if (!(target instanceof CreeperEntity) && !(target instanceof GhastEntity)) {
+		         if (target instanceof CyberDog) {
+		        	 CyberDog wolfentity = (CyberDog)target;
+		            return !wolfentity.isTamed() || wolfentity.getOwner() != owner;
+		         } else if (target instanceof PlayerEntity && owner instanceof PlayerEntity && !((PlayerEntity)owner).canAttackPlayer((PlayerEntity)target)) {
+		            return false;
+		         } else if (target instanceof AbstractHorseEntity && ((AbstractHorseEntity)target).isTame()) {
+		            return false;
+		         } else {
+		            return !(target instanceof TameableEntity) || !((TameableEntity)target).isTamed();
+		         }
+		      } else {
+		         return false;
+		      }
+		   }
+	   
+	   public void setAngry(boolean angry) {
+		      byte b0 = this.dataManager.get(TAMED);
+		      if (angry) {
+		         this.dataManager.set(TAMED, (byte)(b0 | 2));
+		      } else {
+		         this.dataManager.set(TAMED, (byte)(b0 & -3));
+		      }
+
 	   }
 
 	
@@ -372,7 +432,7 @@ public class CyberDog extends TameableEntity{
 		   }
 	   
 	   private void setSleeping(boolean p_213485_1_) {
-		      this.setDogFlag(32, p_213485_1_);
+		      this.setDogFlag(18, p_213485_1_);
 		   }
 	   
 	   private void setDogFlag(int p_213505_1_, boolean p_213505_2_) {

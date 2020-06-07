@@ -337,54 +337,54 @@ public class CyberDogModel<T extends CyberDog> extends EntityModel<T> {
 			
 			
 			
-			}
-			else if(entityIn.isSleeping()) {
-				body.setRotationPoint(0.0F, 31.0F, 0.0F);
-				mane.setRotationPoint(1.0F, -14.0F, 2.0F);
-				Mainbody.setRotationPoint(3.0F, -8.0F, 0.0F);
-				gearsL.setRotationPoint(0.0F, 0.0F, 0.0F);
-				gear1.setRotationPoint(0.0F, 0.0F, 0.0F);
-				Layer5.setRotationPoint(0.0F, 0.0F, 0.0F);
-				layer6.setRotationPoint(0.4F, -1.8F, 1.6F);
-				setRotationAngle(layer6, -0.7854F, 0.0F, 0.0F);
-				gear2.setRotationPoint(0.3F, -2.4F, 4.0F);
-				Layer7.setRotationPoint(-0.3F, 1.8F, -1.6F);
-				layer8.setRotationPoint(0.1F, 0.0F, 0.0F);
-				setRotationAngle(layer8, -0.7854F, 0.0F, 0.0F);
-				gearsR.setRotationPoint(0.0F, 0.0F, 0.0F);
-				gear4.setRotationPoint(-6.0F, -0.6F, 2.4F);
-				Layer4.setRotationPoint(0.0F, 0.0F, 0.0F);
-				layer9.setRotationPoint(-0.4F, -1.8F, 1.6F);
-				setRotationAngle(layer9, -0.7854F, 0.0F, 0.0F);
-				gear3.setRotationPoint(-6.0F, 0.0F, 0.0F);
-				Layer2.setRotationPoint(0.0F, 0.0F, 0.0F);
-				layer3.setRotationPoint(-0.4F, -1.8F, 1.6F);
-				setRotationAngle(layer3, -0.7854F, 0.0F, 0.0F);
-				head.setRotationPoint(0.0F, -14.0F, -6.0F);
-				jawgear2.setRotationPoint(2.05F, 3.0F, -3.2F);
-				setRotationAngle(jawgear2, 0.0F, 0.1745F, 0.0F);
-				jaw3.setRotationPoint(4.4F, 2.5F, -0.3F);
-				setRotationAngle(jaw3, 0.1745F, 0.0F, 0.0F);
-				jaw2.setRotationPoint(4.4F, 3.5F, -0.8F);
-				setRotationAngle(jaw2, 0.0F, -0.3491F, 0.0F);
-				jaw.setRotationPoint(2.0F, 3.5F, -6.0F);
-				setRotationAngle(jaw, 0.0F, 0.3491F, 0.0F);
-				tail.setRotationPoint(0.0F, -13.0F, 8.0F);
-				setRotationAngle(tail, -0.5236F, 0.0F, 0.0F);
-				legs.setRotationPoint(3.0F, 0.0F, -4.0F);
-				back.setRotationPoint(-3.0F, -8.0F, 11.0F);
-				setRotationAngle(back, 1.5708F, 0.0F, 0.0F);
-				left.setRotationPoint(1.5F, 0.0F, 0.0F);
-				right.setRotationPoint(-1.5F, 0.0F, 0.0F);
-				front.setRotationPoint(-3.0F, -8.0F, 0.0F);
-				left2.setRotationPoint(2.5F, 0.0F, 0.0F);
-				setRotationAngle(left2, -1.4835F, 0.0F, 0.0F);
-				kneeplate.setRotationPoint(0.5F, 8.0F, 0.0F);
-				right2.setRotationPoint(-2.5F, 0.0F, 0.0F);
-				setRotationAngle(right2, -1.4835F, 0.0F, 0.0F);
-				kneeplate2.setRotationPoint(0.5F, 8.0F, 0.0F);
-				sholderplate.setRotationPoint(0.0F, -2.8F, 0.4F);
-				setRotationAngle(sholderplate, -0.3491F, 0.0F, 0.0F);
+		}
+		else if(entityIn.isSleeping()) {
+			body.setRotationPoint(0.0F, 31.0F, 0.0F);
+			mane.setRotationPoint(1.0F, -14.0F, 2.0F);
+			Mainbody.setRotationPoint(3.0F, -8.0F, 0.0F);
+			gearsL.setRotationPoint(0.0F, 0.0F, 0.0F);
+			gear1.setRotationPoint(0.0F, 0.0F, 0.0F);
+			Layer5.setRotationPoint(0.0F, 0.0F, 0.0F);
+			layer6.setRotationPoint(0.4F, -1.8F, 1.6F);
+			setRotationAngle(layer6, -0.7854F, 0.0F, 0.0F);
+			gear2.setRotationPoint(0.3F, -2.4F, 4.0F);
+			Layer7.setRotationPoint(-0.3F, 1.8F, -1.6F);
+			layer8.setRotationPoint(0.1F, 0.0F, 0.0F);
+			setRotationAngle(layer8, -0.7854F, 0.0F, 0.0F);
+			gearsR.setRotationPoint(0.0F, 0.0F, 0.0F);
+			gear4.setRotationPoint(-6.0F, -0.6F, 2.4F);
+			Layer4.setRotationPoint(0.0F, 0.0F, 0.0F);
+			layer9.setRotationPoint(-0.4F, -1.8F, 1.6F);
+			setRotationAngle(layer9, -0.7854F, 0.0F, 0.0F);
+			gear3.setRotationPoint(-6.0F, 0.0F, 0.0F);
+			Layer2.setRotationPoint(0.0F, 0.0F, 0.0F);
+			layer3.setRotationPoint(-0.4F, -1.8F, 1.6F);
+			setRotationAngle(layer3, -0.7854F, 0.0F, 0.0F);
+			head.setRotationPoint(0.0F, -14.0F, -6.0F);
+			jawgear2.setRotationPoint(2.05F, 3.0F, -3.2F);
+			setRotationAngle(jawgear2, 0.0F, 0.1745F, 0.0F);
+			jaw3.setRotationPoint(4.4F, 2.5F, -0.3F);
+			setRotationAngle(jaw3, 0.1745F, 0.0F, 0.0F);
+			jaw2.setRotationPoint(4.4F, 3.5F, -0.8F);
+			setRotationAngle(jaw2, 0.0F, -0.3491F, 0.0F);
+			jaw.setRotationPoint(2.0F, 3.5F, -6.0F);
+			setRotationAngle(jaw, 0.0F, 0.3491F, 0.0F);
+			tail.setRotationPoint(0.0F, -13.0F, 8.0F);
+			setRotationAngle(tail, -0.5236F, 0.0F, 0.0F);
+			legs.setRotationPoint(3.0F, 0.0F, -4.0F);
+			back.setRotationPoint(-3.0F, -8.0F, 11.0F);
+			setRotationAngle(back, 1.5708F, 0.0F, 0.0F);
+			left.setRotationPoint(1.5F, 0.0F, 0.0F);
+			right.setRotationPoint(-1.5F, 0.0F, 0.0F);
+			front.setRotationPoint(-3.0F, -8.0F, 0.0F);
+			left2.setRotationPoint(2.5F, 0.0F, 0.0F);
+			setRotationAngle(left2, -1.4835F, 0.0F, 0.0F);
+			kneeplate.setRotationPoint(0.5F, 8.0F, 0.0F);
+			right2.setRotationPoint(-2.5F, 0.0F, 0.0F);
+			setRotationAngle(right2, -1.4835F, 0.0F, 0.0F);
+			kneeplate2.setRotationPoint(0.5F, 8.0F, 0.0F);
+			sholderplate.setRotationPoint(0.0F, -2.8F, 0.4F);
+			setRotationAngle(sholderplate, -0.3491F, 0.0F, 0.0F);
 				
 				
 			}

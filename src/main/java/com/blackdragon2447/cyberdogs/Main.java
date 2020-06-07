@@ -35,6 +35,7 @@ public class Main{
 
         
         MinecraftForge.EVENT_BUS.register(this);
+      
     }
 
     private void setup(final FMLCommonSetupEvent event)
